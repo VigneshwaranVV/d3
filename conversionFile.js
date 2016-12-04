@@ -19,7 +19,7 @@ var asiacountry=new Array("Afghanistan","Armenia","Azerbaijan","Bahrain","Bangla
 	"Timor-Leste","Turkey","Turkmenistan","United Arab Emirates (UAE)","Uzbekistan","Vietnam","Yemen");
 lineReader.on('line', function (line) {
 	var lineData = line.trim().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);;
-	if(count==0)
+	if(count==0) //condition to get index values of required keys
 	{
 		this.indexCountry = lineData.indexOf('CountryName');
 		this.indexindicatorname = lineData.indexOf('IndicatorName');
