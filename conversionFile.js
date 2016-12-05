@@ -8,10 +8,11 @@ var indexCountry="";
 var indexindicatorname="";
 var indexyear=0;
 var country=0;
-var viki=[];
+var outputArray=[];
 var Urbanvalue=new Array(2500).fill(0);
 var Ruralvalue=new Array(2500).fill(0);
-var output2=[],output1=[];
+var output2=[],output1=[]; 
+//assign the asian country to array
 var asiacountry=new Array("Afghanistan","Armenia","Azerbaijan","Bahrain","Bangladesh","Bhutan","Brunei","Cambodia",
 	"China","Cyprus","Georgia","India","Indonesia","Iran","Iraq","Israel","Japan","Jordan","Kazakhstan","Kuwait","Kyrgyzstan","Laos",
 	"Lebanon","Malaysia","Maldives","Mongolia","Myanmar (Burma)","Nepal","North Korea","Oman","Pakistan","Palestine",
@@ -26,8 +27,7 @@ lineReader.on('line', function (line) {
 		this.indexyear=lineData.indexOf('Year');
 		this.indexvalue=lineData.indexOf('Value');
 		count++;
-		console.log(this.indexCountry+"============"+this.indexindicatorname+"==============="+this.indexvalue+"======"+this.indexyear)
-	}
+		}
 	else
 	{
 		if(lineData[this.indexCountry]=="India"&&(lineData[this.indexindicatorname]=="Urban population (% of total)"||lineData[this.indexindicatorname]=="Rural population (% of total population)"))
@@ -39,36 +39,32 @@ lineReader.on('line', function (line) {
 			};
 			output1.push(this.Object1);
 		}
-
 		if(asiacountry.indexOf(lineData[this.indexCountry])!=-1){
 			if(lineData[this.indexindicatorname]=="Urban population (% of total)"){
 				Urbanvalue[lineData[this.indexyear]]+=parseFloat(lineData[this.indexvalue]);
 				if(lineData[this.indexyear]==2015)
-			console.log(lineData[this.indexvalue]);
-
+					console.log(lineData[this.indexvalue]);
 			}
 			else if(lineData[this.indexindicatorname]=="Rural population (% of total population)")
 			{
 				Ruralvalue[lineData[this.indexyear]]+=parseFloat(lineData[this.indexvalue]);
 			}
-			viki[lineData[this.indexyear]]={
+			outputArray[lineData[this.indexyear]]={
 				"Year":lineData[this.indexyear],
 				"Urban population (% of total)":Urbanvalue[lineData[this.indexyear]],
 				"Rural population (% of total population)":Ruralvalue[lineData[this.indexyear]]
 			};
-
 		}
 
 	}
 
 });
-
-lineReader.on('close',function(){
+lineReader.on('close',function(){//write into the json file when the read is finished
 	for(var y=1960;y<2016;y++){
-		output2.push(viki[y]);
-		//console.log(viki[y]);
+		output2.push(outputArray[y]);//push the output
 	}	
-	fs.writeFile('ForLinechart.json',JSON.stringify(output1));
-	fs.writeFile('ForStackedbarchart.json',JSON.stringify(output2));
+	fs.writeFile('json/ForLinechart.json',JSON.stringify(output1));
+	console.log("ForLinechart.json was created")
+	fs.writeFile('json/ForStackedbarchart.json',JSON.stringify(output2));
+	console.log("ForStackedbarchart.json was created")
 });
-
